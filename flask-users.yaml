@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: flaskusers
+  labels:
+    app: flaskusers
+spec:
+  selector:
+    matchLabels:
+      app: flaskusers
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: flaskusers
+    spec:
+      containers:
+      - name: flaskusers       
+        image: flask-user:0.0.1
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        imagePullPolicy: Always
+        env:
+          - name: users_api
+            value: "http://usersapi:3000"
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: registry-secret
+      restartPolicy: Always
